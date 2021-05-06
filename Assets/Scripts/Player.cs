@@ -4,16 +4,34 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    enum NumberPlayer
+    {
+        player_1,
+        player_2
+    }
+    // Events
+    // public delegate void ShootPlayer(Vector2 initialPos, Quaternion initialRotation);
+    // public static event ShootPlayer OnShootPlayer;
+
+    [Header("Player Status")]
     [SerializeField] private int health;
     [SerializeField] private int damage;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float angularSpeed;
+    [SerializeField] private float startAngule, angularLimit;
 
+    [Header("References")]
     [SerializeField] private GameObject spriteObj;
+    [SerializeField] private GameObject bulletObj, bulletParent;
 
+    void Start()
+    {
+        startAngule = spriteObj.transform.rotation.eulerAngles.z;
+    }
     void Update()
     {
         Movement();
+        Shoot(transform.position, spriteObj.transform.rotation);
     }
 
     void Movement()
@@ -37,7 +55,8 @@ public class Player : MonoBehaviour
                 transform.position = new Vector2(transform.position.x, 0.1f);
         }
 
-        if (spriteObj.transform.rotation.eulerAngles.z < 320 && spriteObj.transform.rotation.eulerAngles.z > 220)
+        if (spriteObj.transform.rotation.eulerAngles.z < startAngule + angularLimit 
+        && spriteObj.transform.rotation.eulerAngles.z > startAngule - angularLimit )
         {
             if (Input.GetKey(KeyCode.RightArrow))
             {
@@ -50,14 +69,20 @@ public class Player : MonoBehaviour
         }
         else
         {
-            if (spriteObj.transform.rotation.eulerAngles.z >= 320)
+            if (spriteObj.transform.rotation.eulerAngles.z >= startAngule + angularLimit)
             {
                 spriteObj.transform.Rotate(new Vector3(0f, 0f, -1f));
             }
-            if (spriteObj.transform.rotation.eulerAngles.z <= 220)
+            if (spriteObj.transform.rotation.eulerAngles.z <= startAngule - angularLimit)
             {
                 spriteObj.transform.Rotate(new Vector3(0f, 0f, 1));
             }
         }
+    }
+
+    void Shoot(Vector2 pos, Quaternion rotation)
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+            Instantiate(bulletObj, pos, rotation, bulletParent.transform);
     }
 }

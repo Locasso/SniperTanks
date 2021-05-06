@@ -29,6 +29,7 @@ public class CheckList : MonoBehaviour
     [Header("Fases")]
     public string[] design_fases;
     public bool objetos_estaticos;
+    public bool objetos_movimento;
     public bool transicao_fases;
 
     [Header("Audios")]
