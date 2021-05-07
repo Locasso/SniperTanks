@@ -4,16 +4,18 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    enum NumberPlayer
+    public enum NumberPlayer
     {
         player_1,
         player_2
     }
+
     // Events
-    // public delegate void ShootPlayer(Vector2 initialPos, Quaternion initialRotation);
-    // public static event ShootPlayer OnShootPlayer;
+    public delegate void PlayerDied(int player);
+    public static event PlayerDied OnPlayerDied;
 
     [Header("Player Status")]
+    [SerializeField] private NumberPlayer playerId;
     [SerializeField] private int health;
     [SerializeField] private int damage;
     [SerializeField] private float moveSpeed;
@@ -22,6 +24,7 @@ public class Player : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private GameObject spriteObj;
+    [SerializeField] private GameObject playerCannon;
     [SerializeField] private GameObject bulletObj, bulletParent;
 
     void Start()
@@ -31,7 +34,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         Movement();
-        Shoot(transform.position, spriteObj.transform.rotation);
+        Shoot(new Vector2(playerCannon.transform.position.x, playerCannon.transform.position.y), playerCannon.transform.rotation);
     }
 
     void Movement()
@@ -55,8 +58,8 @@ public class Player : MonoBehaviour
                 transform.position = new Vector2(transform.position.x, 0.1f);
         }
 
-        if (spriteObj.transform.rotation.eulerAngles.z < startAngule + angularLimit 
-        && spriteObj.transform.rotation.eulerAngles.z > startAngule - angularLimit )
+        if (spriteObj.transform.rotation.eulerAngles.z < startAngule + angularLimit
+        && spriteObj.transform.rotation.eulerAngles.z > startAngule - angularLimit)
         {
             if (Input.GetKey(KeyCode.RightArrow))
             {
@@ -83,6 +86,30 @@ public class Player : MonoBehaviour
     void Shoot(Vector2 pos, Quaternion rotation)
     {
         if (Input.GetKeyDown(KeyCode.Space))
-            Instantiate(bulletObj, pos, rotation, bulletParent.transform);
+        {
+            GameObject bullet = Instantiate(bulletObj, pos, rotation, bulletParent.transform);
+            bullet.GetComponent<Bullet>().DamageFromPlayer = damage;
+        }
     }
+
+    void OnReceiveDamage(int damageReceived)
+    {
+        health -= damageReceived;
+        if (health <= 0)
+        {
+            OnPlayerDied?.Invoke((int)playerId);
+        }
+    }
+
+    #region Inscrição e trancamento nos eventos
+    void OnEnable()
+    {
+        Bullet.OnHitPlayer += OnReceiveDamage;
+    }
+
+    void OnDisable()
+    {
+        Bullet.OnHitPlayer -= OnReceiveDamage;
+    }
+    #endregion
 }
