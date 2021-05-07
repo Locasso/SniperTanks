@@ -6,12 +6,13 @@ using UnityEditor;
 public class Bullet : MonoBehaviour
 {
     //  Events
-    public delegate void HitPlayer(int damage);
+    public delegate void HitPlayer(int damage, string objName);
     public static event HitPlayer OnHitPlayer;
 
     [Header("Bullet Attributes")]
     [SerializeField] private float movementSpeed;
-    [SerializeField] private float maxStepDistance = 2;
+    [SerializeField] private float maxStepDistance;
+    [SerializeField] private float maxReflection;
     int damageFromPlayer;
 
     [Header("Control parameters")]
@@ -42,8 +43,10 @@ public class Bullet : MonoBehaviour
         {
             if (hit.collider.gameObject.tag != null && hit.collider.gameObject.tag == "player")
             {
-                OnHitPlayer?.Invoke(damageFromPlayer);
+                OnHitPlayer?.Invoke(damageFromPlayer, hit.collider.gameObject.transform.parent.name);
+                Debug.Log(hit.collider.gameObject.transform.parent.name);
                 Destroy(gameObject);
+                GameManager.turnMoment = 2;
             }
             else
             {
@@ -51,6 +54,13 @@ public class Bullet : MonoBehaviour
                 direction = newDirect;
                 float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg) - 90;
                 transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                maxReflection--;
+                if(maxReflection <= 0)
+                {
+                    Destroy(gameObject);
+                    GameManager.turnMoment = 1;
+                    GameManager.turnMoment = 2;
+                }
             }
         }
     }

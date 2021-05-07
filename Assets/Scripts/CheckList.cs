@@ -13,6 +13,7 @@ public class CheckList : MonoBehaviour
     public bool perda_vida;
 
     [Header("Projétil")]
+    public string[] comportamentos_projetil;
     public string[] atributos_projetil;
     public bool movimento_linear_projetil;
     public bool colisao_cenario;
@@ -33,13 +34,16 @@ public class CheckList : MonoBehaviour
     public bool transicao_fases;
 
     [Header("Audios")]
-    public string lista_audios;
+    public string[] lista_audios;
     public bool construcao_audiomanager;
 
     [Header("Telas")]
     public bool cena_game;
     public bool cena_menu;
     public bool game_over;
+
+    [Header("Features")]
+     public string[] power_ups;
 
     void Start()
     {

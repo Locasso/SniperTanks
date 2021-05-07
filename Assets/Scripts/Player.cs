@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -14,18 +15,32 @@ public class Player : MonoBehaviour
     public delegate void PlayerDied(int player);
     public static event PlayerDied OnPlayerDied;
 
+    public delegate void ResolutionTurn(int turnMode);
+    public static event ResolutionTurn OnResolutionTurn;
+
     [Header("Player Status")]
     [SerializeField] private NumberPlayer playerId;
     [SerializeField] private int health;
     [SerializeField] private int damage;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float angularSpeed;
-    [SerializeField] private float startAngule, angularLimit;
+    [SerializeField] private float startAngule;
+    [SerializeField] private float moveLimit;
+    [SerializeField] private float angularLimit;
+
+    [Header("Player Status")]
+    private bool canMoveTurn = true;
 
     [Header("References")]
     [SerializeField] private GameObject spriteObj;
     [SerializeField] private GameObject playerCannon;
     [SerializeField] private GameObject bulletObj, bulletParent;
+
+    [Header("HUD References")]
+    [SerializeField] private Text health_txt;
+
+    public NumberPlayer PlayerId { get => playerId; set => playerId = value; }
+    public bool CanMoveTurn { get => canMoveTurn; set => canMoveTurn = value; }
 
     void Start()
     {
@@ -33,13 +48,16 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
-        Movement();
-        Shoot(new Vector2(playerCannon.transform.position.x, playerCannon.transform.position.y), playerCannon.transform.rotation);
+        if (canMoveTurn)
+        {
+            Movement();
+            Shoot(new Vector2(playerCannon.transform.position.x, playerCannon.transform.position.y), playerCannon.transform.rotation);
+        }
     }
 
     void Movement()
     {
-        if (transform.position.y < Screen.height && transform.position.y > 0)
+        if (transform.position.y < Screen.height - moveLimit && transform.position.y > 0 + moveLimit)
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
@@ -52,10 +70,10 @@ public class Player : MonoBehaviour
         }
         else
         {
-            if (transform.position.y >= Screen.height)
-                transform.position = new Vector2(transform.position.x, Screen.height - 1);
-            else if (transform.position.y <= 0)
-                transform.position = new Vector2(transform.position.x, 0.1f);
+            if (transform.position.y >= Screen.height - moveLimit)
+                transform.position = new Vector2(transform.position.x, (Screen.height - moveLimit) - 1);
+            else if (transform.position.y <= 0 + moveLimit)
+                transform.position = new Vector2(transform.position.x, moveLimit + 0.1f);
         }
 
         if (spriteObj.transform.rotation.eulerAngles.z < startAngule + angularLimit
@@ -89,15 +107,20 @@ public class Player : MonoBehaviour
         {
             GameObject bullet = Instantiate(bulletObj, pos, rotation, bulletParent.transform);
             bullet.GetComponent<Bullet>().DamageFromPlayer = damage;
+            GameManager.turnMoment = 1;
         }
     }
 
-    void OnReceiveDamage(int damageReceived)
+    void OnReceiveDamage(int damageReceived, string name)
     {
-        health -= damageReceived;
-        if (health <= 0)
+        if (name == this.gameObject.transform.name)
         {
-            OnPlayerDied?.Invoke((int)playerId);
+            health -= damageReceived;
+            health_txt.text = health.ToString();
+            if (health <= 0)
+            {
+                OnPlayerDied?.Invoke((int)playerId);
+            }
         }
     }
 
