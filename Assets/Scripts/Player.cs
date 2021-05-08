@@ -8,7 +8,8 @@ public class Player : MonoBehaviour
     public enum NumberPlayer
     {
         player_1,
-        player_2
+        player_2,
+        movable_agent
     }
 
     // Events
@@ -22,8 +23,8 @@ public class Player : MonoBehaviour
     [SerializeField] private NumberPlayer playerId;
     [SerializeField] private int health;
     [SerializeField] private int damage;
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float angularSpeed;
+    [SerializeField] protected float moveSpeed;
+    [SerializeField] protected float angularSpeed;
     [SerializeField] private float startAngule;
     [SerializeField] private float moveLimit;
     [SerializeField] private float angularLimit;
@@ -44,18 +45,21 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        startAngule = spriteObj.transform.rotation.eulerAngles.z;
+        if (spriteObj != null)
+            startAngule = spriteObj.transform.rotation.eulerAngles.z;
     }
     void Update()
     {
         if (canMoveTurn)
         {
             Movement();
-            Shoot(new Vector2(playerCannon.transform.position.x, playerCannon.transform.position.y), playerCannon.transform.rotation);
+
+            if (playerCannon != null)
+                Shoot(new Vector2(playerCannon.transform.position.x, playerCannon.transform.position.y), playerCannon.transform.rotation);
         }
     }
 
-    void Movement()
+    protected virtual void Movement()
     {
         if (transform.position.y < Screen.height - moveLimit && transform.position.y > 0 + moveLimit)
         {
@@ -106,7 +110,6 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             GameObject bullet = Instantiate(bulletObj, pos, rotation, bulletParent.transform);
-            bullet.GetComponent<Bullet>().DamageFromPlayer = damage;
             GameManager.turnMoment = 1;
         }
     }
@@ -119,6 +122,7 @@ public class Player : MonoBehaviour
             health_txt.text = health.ToString();
             if (health <= 0)
             {
+                health_txt.text = 0.ToString();
                 OnPlayerDied?.Invoke((int)playerId);
             }
         }

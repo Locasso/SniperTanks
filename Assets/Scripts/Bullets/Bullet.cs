@@ -10,17 +10,15 @@ public class Bullet : MonoBehaviour
     public static event HitPlayer OnHitPlayer;
 
     [Header("Bullet Attributes")]
-    [SerializeField] private float movementSpeed;
-    [SerializeField] private float maxStepDistance;
-    [SerializeField] private float maxReflection;
-    int damageFromPlayer;
+    [SerializeField] protected float movementSpeed;
+    [SerializeField] protected float maxStepDistance;
+    [SerializeField] protected float maxReflection;
+    [SerializeField] protected int damage;
 
     [Header("Control parameters")]
     Vector3 direction;
     Vector3 startingPosition;
     RaycastHit2D hit;
-
-    public int DamageFromPlayer { get => damageFromPlayer; set => damageFromPlayer = value; }
 
     private void Start()
     {
@@ -33,7 +31,7 @@ public class Bullet : MonoBehaviour
         Movement();
     }
 
-    void Movement()
+    protected virtual void Movement()
     {
         transform.position += direction * movementSpeed;
 
@@ -43,10 +41,10 @@ public class Bullet : MonoBehaviour
         {
             if (hit.collider.gameObject.tag != null && hit.collider.gameObject.tag == "player")
             {
-                OnHitPlayer?.Invoke(damageFromPlayer, hit.collider.gameObject.transform.parent.name);
+                OnHitPlayer?.Invoke(damage, hit.collider.gameObject.transform.parent.name);
                 Debug.Log(hit.collider.gameObject.transform.parent.name);
                 Destroy(gameObject);
-                GameManager.turnMoment = 2;
+                TurnControl(2);
             }
             else
             {
@@ -55,13 +53,18 @@ public class Bullet : MonoBehaviour
                 float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg) - 90;
                 transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
                 maxReflection--;
-                if(maxReflection <= 0)
+                if (maxReflection <= 0)
                 {
                     Destroy(gameObject);
                     GameManager.turnMoment = 1;
-                    GameManager.turnMoment = 2;
+                    TurnControl(2);
                 }
             }
         }
+    }
+
+    protected virtual void TurnControl(short id)
+    {
+        GameManager.turnMoment = id;
     }
 }

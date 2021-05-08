@@ -37,6 +37,11 @@ public class CheckList : MonoBehaviour
     public string[] lista_audios;
     public bool construcao_audiomanager;
 
+    [Header("Feedbacks")]
+    public bool animacao_hit;
+    public bool feedback_turnos;
+    public bool projetil_explosao;
+
     [Header("Telas")]
     public bool cena_game;
     public bool cena_menu;

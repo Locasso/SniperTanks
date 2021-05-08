@@ -6,9 +6,11 @@ public class GameManager : MonoBehaviour
 {
     [Header("References for turn control")]
     [SerializeField] private GameObject[] players;
-
     [SerializeField] private static short currentTurn;
     public static short turnMoment;
+
+    [Header("Special Bullets Control")]
+    public static short fastBulletCount;
 
     void Start()
     {
@@ -51,7 +53,12 @@ public class GameManager : MonoBehaviour
             currentTurn = 0;
         }
         else
-            currentTurn++;
+        {
+            if(fastBulletCount != 1)
+            {
+                 currentTurn++;
+            }         
+        }
 
         turnMoment = 0;
         StartCoroutine(TurnSystem());
