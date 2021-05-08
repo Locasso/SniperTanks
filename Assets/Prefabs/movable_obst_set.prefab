@@ -66,8 +66,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 5289944604112712599, guid: 91f70b01917298742a56ab68e5e62ca9,
+    type: 3}
+  m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -212,7 +213,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6259343283151619362}
   m_Layer: 5
-  m_Name: obj_1
+  m_Name: movable_obst_set
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

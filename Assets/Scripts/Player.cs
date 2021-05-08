@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float angularLimit;
 
     [Header("Player Status")]
-    private bool canMoveTurn = true;
+    private bool canMoveTurn;
 
     [Header("References")]
     [SerializeField] private GameObject spriteObj;
@@ -42,6 +42,7 @@ public class Player : MonoBehaviour
 
     public NumberPlayer PlayerId { get => playerId; set => playerId = value; }
     public bool CanMoveTurn { get => canMoveTurn; set => canMoveTurn = value; }
+    public GameObject BulletObj { get => bulletObj; set => bulletObj = value; }
 
     void Start()
     {
@@ -122,6 +123,7 @@ public class Player : MonoBehaviour
             health_txt.text = health.ToString();
             if (health <= 0)
             {
+                spriteObj.GetComponent<Image>().color = Color.black;
                 health_txt.text = 0.ToString();
                 OnPlayerDied?.Invoke((int)playerId);
             }

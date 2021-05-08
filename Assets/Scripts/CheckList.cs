@@ -57,6 +57,7 @@ public class CheckList : MonoBehaviour
 
     [Header("Features")]
     public string[] power_ups_descriptions;
+    public bool powerups_implementado;
 
     [Header("Code Management")]
     public bool code_review;

@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gameOverCanvas;
     [SerializeField] private Button playAgainBtn;
     [SerializeField] private Button mainMenuBtn;
+    [SerializeField] private Text turnFeedback;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip[] audioClips;
 
@@ -23,7 +24,18 @@ public class GameManager : MonoBehaviour
     public static short fastBulletCount;
 
     void Start()
-    {    
+    {
+        
+    }
+
+    public void StartGame()
+    {
+        for (int i = 0; i <= players.Length - 1; i++)
+        {
+
+            players[i].GetComponent<Player>().CanMoveTurn = true;
+        }
+        
         currentTurn = (short)UnityEngine.Random.Range(0, players.Length);
         StartCoroutine(TurnSystem());
     }
@@ -41,6 +53,9 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+
+        turnFeedback.text = $"Player {currentTurn + 1} turn";
+        turnFeedback.GetComponent<Animator>().SetTrigger("feedback");
 
         yield return new WaitUntil(() => turnMoment == 1);
 
@@ -85,7 +100,7 @@ public class GameManager : MonoBehaviour
         gameOverCanvas.SetActive(true);
         playAgainBtn.onClick.AddListener(() => FindObjectOfType<MenuManager>().ChangeScene("GameScene"));
         mainMenuBtn.onClick.AddListener(() => FindObjectOfType<MenuManager>().ChangeScene("MenuScene"));
-    
+
         for (int i = 0; i <= players.Length - 1; i++)
         {
             if ((int)players[i].GetComponent<Player>().PlayerId != playerId)
