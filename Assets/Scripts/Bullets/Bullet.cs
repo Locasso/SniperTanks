@@ -9,6 +9,9 @@ public class Bullet : MonoBehaviour
     public delegate void HitPlayer(int damage, string objName);
     public static event HitPlayer OnHitPlayer;
 
+    public delegate void SendSound(string soundName);
+    public static event SendSound OnSendSound;
+
     [Header("Bullet Attributes")]
     [SerializeField] protected float movementSpeed;
     [SerializeField] protected float maxStepDistance;
@@ -24,6 +27,7 @@ public class Bullet : MonoBehaviour
     {
         direction = transform.up;
         hit = Physics2D.Raycast(transform.position, direction, maxStepDistance);
+        OnSendSound?.Invoke("shoot");
     }
 
     void Update()
@@ -44,6 +48,7 @@ public class Bullet : MonoBehaviour
                 OnHitPlayer?.Invoke(damage, hit.collider.gameObject.transform.parent.name);
                 Debug.Log(hit.collider.gameObject.transform.parent.name);
                 Destroy(gameObject);
+                OnSendSound?.Invoke("hit");
                 TurnControl(2);
             }
             else
@@ -53,6 +58,7 @@ public class Bullet : MonoBehaviour
                 float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg) - 90;
                 transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
                 maxReflection--;
+                OnSendSound?.Invoke("reflect");
                 if (maxReflection <= 0)
                 {
                     Destroy(gameObject);

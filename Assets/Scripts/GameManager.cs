@@ -1,9 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Object References")]
+    [SerializeField] private GameObject gameOverCanvas;
+    [SerializeField] private Button playAgainBtn;
+    [SerializeField] private Button mainMenuBtn;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip[] audioClips;
+
     [Header("References for turn control")]
     [SerializeField] private GameObject[] players;
     [SerializeField] private static short currentTurn;
@@ -13,8 +23,8 @@ public class GameManager : MonoBehaviour
     public static short fastBulletCount;
 
     void Start()
-    {
-        currentTurn = (short)Random.Range(0, players.Length);
+    {    
+        currentTurn = (short)UnityEngine.Random.Range(0, players.Length);
         StartCoroutine(TurnSystem());
     }
 
@@ -54,34 +64,47 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            if(fastBulletCount != 1)
+            if (fastBulletCount != 1)
             {
-                 currentTurn++;
-            }         
+                currentTurn++;
+            }
         }
 
         turnMoment = 0;
         StartCoroutine(TurnSystem());
     }
-    
+
+    void AudioPlay(string audioName)
+    {
+        audioSource.clip = Array.Find(audioClips, item => item.name == audioName);
+        audioSource.Play();
+    }
+
     void GameOver(int playerId)
     {
-        if (playerId == 0)
-            Debug.Log("Player 2 Venceu");
-        else
-            Debug.Log("Player 1 Venceu");
+        gameOverCanvas.SetActive(true);
+        playAgainBtn.onClick.AddListener(() => FindObjectOfType<MenuManager>().ChangeScene("GameScene"));
+        mainMenuBtn.onClick.AddListener(() => FindObjectOfType<MenuManager>().ChangeScene("MenuScene"));
+    
+        for (int i = 0; i <= players.Length - 1; i++)
+        {
+            if ((int)players[i].GetComponent<Player>().PlayerId != playerId)
+                gameOverCanvas.transform.Find("winner_txt").GetComponent<Text>().text =
+                $"Player {(int)players[i].GetComponent<Player>().PlayerId + 1} wins!";
+        }
     }
 
     #region Inscrição e trancamento nos eventos
     void OnEnable()
     {
         Player.OnPlayerDied += GameOver;
-        // Player.ResolutionTurn +=
+        Bullet.OnSendSound += AudioPlay;
     }
 
     void OnDisable()
     {
         Player.OnPlayerDied -= GameOver;
+        Bullet.OnSendSound -= AudioPlay;
     }
     #endregion
 }

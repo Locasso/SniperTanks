@@ -26,12 +26,20 @@ public class CheckList : MonoBehaviour
     public bool passagem_de_turnos;
     public bool interacao_dois_jogadores;
     public bool logica_gameOver;
+    public bool escolha_bullet;
 
     [Header("Fases")]
     public string[] design_fases;
     public bool objetos_estaticos;
     public bool objetos_movimento;
     public bool transicao_fases;
+
+    [Header("Artes")]
+    public bool background;
+    public bool tanks;
+    public bool bullets;
+    public bool bricks;
+    public bool power_ups;
 
     [Header("Audios")]
     public string[] lista_audios;
@@ -48,10 +56,10 @@ public class CheckList : MonoBehaviour
     public bool game_over;
 
     [Header("Features")]
-     public string[] power_ups;
+    public string[] power_ups_descriptions;
 
-    void Start()
-    {
-        DontDestroyOnLoad(this.gameObject);
-    }
+    [Header("Code Management")]
+    public bool code_review;
+    public bool refatoration;
+    public bool comments_review;
 }

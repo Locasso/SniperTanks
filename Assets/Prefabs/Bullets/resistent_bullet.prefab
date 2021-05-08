@@ -125,6 +125,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 1.5
-  maxStepDistance: 10
+  maxStepDistance: 20
   maxReflection: 16
   damage: 16

@@ -127,4 +127,4 @@ MonoBehaviour:
   movementSpeed: 2
   maxStepDistance: 10
   maxReflection: 10
-  damage: 10
+  damage: 20
