@@ -10,6 +10,9 @@ public class Bullet : MonoBehaviour
     public delegate void HitPlayer(int damage, string objName);
     public static event HitPlayer OnHitPlayer;
 
+    public delegate void HitPowerUp(string objName);
+    public static event HitPowerUp OnHitPowerUp;
+
     public delegate void SendSound(string soundName);
     public static event SendSound OnSendSound;
 
@@ -41,7 +44,7 @@ public class Bullet : MonoBehaviour
     {
         if (!stop)
         {
-            transform.position += direction * movementSpeed;
+            transform.position += direction * movementSpeed * Time.deltaTime;
 
             hit = Physics2D.Raycast(transform.position, direction, stepDistance);
 
@@ -54,6 +57,13 @@ public class Bullet : MonoBehaviour
                     OnSendSound?.Invoke("hit");
                     TurnControl(2);
                     DestroyBullet(.47f);
+                }
+                else if(hit.collider.gameObject.tag != null && hit.collider.gameObject.tag == "power_up")
+                {
+                    OnHitPowerUp?.Invoke(hit.collider.gameObject.name);
+                    OnSendSound?.Invoke("life");
+                    GameManager.powerUpControl--;
+                    Destroy(hit.collider.gameObject);
                 }
                 else
                 {

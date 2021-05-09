@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5eceba309f3398f48b83f7a35f92d0b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 2
+  movementSpeed: 800
   stepDistance: 8
   maxReflection: 8
   damage: 9

@@ -22,7 +22,6 @@ public class Player : MonoBehaviour
     [Header("Player Status")]
     [SerializeField] private NumberPlayer playerId;
     [SerializeField] private int health;
-    [SerializeField] private int damage;
     [SerializeField] protected float moveSpeed;
     [SerializeField] protected float angularSpeed;
     [SerializeField] private float startAngule;
@@ -66,11 +65,11 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                transform.Translate(Vector2.up * moveSpeed);
+                transform.Translate(Vector2.up * moveSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
-                transform.Translate(Vector2.down * moveSpeed);
+                transform.Translate(Vector2.down * moveSpeed * Time.deltaTime);
             }
         }
         else
@@ -86,11 +85,11 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                spriteObj.transform.Rotate(new Vector3(0, 0, 1 * angularSpeed), Space.Self);
+                spriteObj.transform.Rotate(new Vector3(0, 0, 1 * angularSpeed  * Time.deltaTime), Space.Self);
             }
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                spriteObj.transform.Rotate(new Vector3(0, 0, -1 * angularSpeed), Space.Self);
+                spriteObj.transform.Rotate(new Vector3(0, 0, -1 * angularSpeed  * Time.deltaTime), Space.Self);
             }
         }
         else
@@ -130,15 +129,27 @@ public class Player : MonoBehaviour
         }
     }
 
+    void OnTakePowerUp(string objName)
+    {
+        if (GameManager.currentTurn == (int)playerId)
+            if (objName.Contains("life"))
+            {
+                health += 15;
+                health_txt.text = health.ToString();
+            }
+    }
+
     #region Inscrição e trancamento nos eventos
     void OnEnable()
     {
         Bullet.OnHitPlayer += OnReceiveDamage;
+        Bullet.OnHitPowerUp += OnTakePowerUp;
     }
 
     void OnDisable()
     {
         Bullet.OnHitPlayer -= OnReceiveDamage;
+        Bullet.OnHitPowerUp -= OnTakePowerUp;
     }
     #endregion
 }

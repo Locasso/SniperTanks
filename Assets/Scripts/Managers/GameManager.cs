@@ -17,16 +17,18 @@ public class GameManager : MonoBehaviour
 
     [Header("References for turn control")]
     [SerializeField] private GameObject[] players;
-    [SerializeField] private static short currentTurn;
+    public static short currentTurn;
     public static short turnMoment;
 
     [Header("Special Bullets Control")]
     public static short fastBulletCount;
 
-    void Start()
-    {
-        
-    }
+    [Header("Power Up Spawn")]
+    [SerializeField] private GameObject[] powerUps;
+    [SerializeField] private GameObject powerUpsPlace;
+    public static short powerUpControl;
+
+    public GameObject PowerUpsPlace { get => powerUpsPlace; set => powerUpsPlace = value; }
 
     public void StartGame()
     {
@@ -35,9 +37,10 @@ public class GameManager : MonoBehaviour
 
             players[i].GetComponent<Player>().CanMoveTurn = true;
         }
-        
+
         currentTurn = (short)UnityEngine.Random.Range(0, players.Length);
         StartCoroutine(TurnSystem());
+        StartCoroutine(SpawnPowerUps());
     }
 
     IEnumerator TurnSystem()
@@ -107,6 +110,28 @@ public class GameManager : MonoBehaviour
                 gameOverCanvas.transform.Find("winner_txt").GetComponent<Text>().text =
                 $"Player {(int)players[i].GetComponent<Player>().PlayerId + 1} wins!";
         }
+    }
+
+    IEnumerator SpawnPowerUps()
+    {
+        powerUpControl++;
+        short randomPower = (short)UnityEngine.Random.Range(0, powerUps.Length);
+        short randomPlace = (short)UnityEngine.Random.Range(0, powerUpsPlace.transform.childCount);
+        GameObject powerUp = Instantiate(powerUps[randomPower], powerUpsPlace.transform.GetChild(randomPlace).transform.position, 
+        powerUpsPlace.transform.GetChild(randomPlace).transform.rotation, powerUpsPlace.transform.GetChild(randomPlace).transform);
+       
+        yield return new WaitUntil(() => powerUpControl == 0);
+               
+        short randomTimer = (short)UnityEngine.Random.Range(15, 30);
+        short count = 0;
+        while(count < randomTimer)
+        {
+            count++;
+            yield return new WaitForSeconds(1f);
+        }
+    
+        yield return new WaitUntil(() => count >= randomTimer);
+        StartCoroutine(SpawnPowerUps());
     }
 
     #region Inscrição e trancamento nos eventos

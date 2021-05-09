@@ -17,16 +17,6 @@ public class PreparationsMenu : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] private GameObject[] maps;
     [SerializeField] private RectTransform canvasPreparation;
 
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-
-    }
-
     public void BulletChoose(GameObject player)
     {
         player.GetComponent<Player>().BulletObj = Array.Find(bullets, item => item.name ==
@@ -35,17 +25,18 @@ public class PreparationsMenu : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void MapChoose(GameObject map)
     {
-        for(int i = 0; i <= map.transform.parent.transform.childCount - 1; i++)
+        for (int i = 0; i <= map.transform.parent.transform.childCount - 1; i++)
         {
             map.transform.parent.transform.GetChild(i).gameObject.SetActive(false);
         }
 
+        FindObjectOfType<GameManager>().PowerUpsPlace = map.transform.Find("power_ups").gameObject;
         map.SetActive(true);
     }
 
     public void SelectableBtn(GameObject buttons)
     {
-        for(int i = 0; i <= buttons.transform.childCount - 1; i++)
+        for (int i = 0; i <= buttons.transform.childCount - 1; i++)
         {
             buttons.transform.GetChild(i).gameObject.GetComponent<Button>().interactable = true;
         }
@@ -58,18 +49,18 @@ public class PreparationsMenu : MonoBehaviour, IPointerEnterHandler, IPointerExi
         explanationMenu.SetActive(true);
         Vector2 anchoredPos;
         // explanationMenu.transform.position = RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasPreparation, eventData.pointerCurrentRaycast.screenPosition, Camera.main, out anchoredPos);
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasPreparation, eventData.pointerCurrentRaycast.screenPosition, 
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasPreparation, eventData.pointerCurrentRaycast.screenPosition,
         canvasPreparation.GetComponent<Canvas>().renderMode == RenderMode.ScreenSpaceOverlay ? null : Camera.main, out anchoredPos);
         explanationMenu.GetComponent<RectTransform>().anchoredPosition = anchoredPos;
         explanationMenuName.text = name;
-        explanationMenuDescription.text = description;      
+        explanationMenuDescription.text = description;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (eventData.pointerCurrentRaycast.gameObject.name == "default_bullet")
         {
-            SpawnExplanation(eventData, "Normal Bullet", "Damage: 20\nResist: 10\nSpeed: Normal\n\nNormal bullet, for normals.");
+            SpawnExplanation(eventData, "Normal Bullet", "Damage: 20\nResist: 10\nSpeed: Normal\n\nNormal bullet, with great damage.");
         }
         else if (eventData.pointerCurrentRaycast.gameObject.name == "fast_bullet")
         {
@@ -85,5 +76,4 @@ public class PreparationsMenu : MonoBehaviour, IPointerEnterHandler, IPointerExi
     {
         explanationMenu.SetActive(false);
     }
-
 }
