@@ -125,10 +125,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5eceba309f3398f48b83f7a35f92d0b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 800
+  movementSpeed: 1
   stepDistance: 8
-  maxReflection: 8
-  damage: 9
+  maxReflection: 6
+  damage: 14
 --- !u!95 &3174963788929006690
 Animator:
   serializedVersion: 3

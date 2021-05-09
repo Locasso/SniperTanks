@@ -153,10 +153,10 @@ RectTransform:
   m_Father: {fileID: 1690818984}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0000047684, y: -0.0000071526}
-  m_SizeDelta: {x: 458.7698, y: 476.86523}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 1.5999756, y: 3.600006}
+  m_SizeDelta: {x: -27.988403, y: -36.40558}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &61401684
 MonoBehaviour:
@@ -229,8 +229,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 7}
-  m_SizeDelta: {x: -507.0047, y: -169.7479}
+  m_AnchoredPosition: {x: -224, y: 3.600006}
+  m_SizeDelta: {x: -554.0846, y: -173.5516}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &197764233
 MonoBehaviour:
@@ -253,18 +253,22 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 2
+    m_MinSize: 1
     m_MaxSize: 40
-    m_Alignment: 1
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Development by: \nGabriel Lo\xE7asso"
+  m_Text: "<b>Development by:</b>\nGabriel Lo\xE7asso\n\n<b>Sprites:\r</b>\n\r\n<b>Tanks,
+    Bullet & Power Up </b>\nhttps://line.17qq.com/articles/sawchrhhx_p5.html\n\r\n<b>Brick</b>
+    https://opengameart.org/content/steampunk-brick-new-connecting-tileset-16x16\r\n\n<b>Grass</b> 
+    https://opengameart.org/content/tileable-bricks-ground-textures-set-1\r\n\n<b>Logo
+    </b> \nhttps://pt.cooltext.com\r"
 --- !u!222 &197764234
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -824,6 +828,89 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1005539822
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1005539823}
+  - component: {fileID: 1005539825}
+  - component: {fileID: 1005539824}
+  m_Layer: 5
+  m_Name: content_txt
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1005539823
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1005539822}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1690818984}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 208, y: 3.600006}
+  m_SizeDelta: {x: -554.0846, y: -173.5516}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1005539824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1005539822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_Maskable: 0
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: "<b>Sounds:\r</b>\n\n\r<b>Epic Background Music </b> \nRoyalty Free Music
+    from Bensound\n\n<b>Player Shoot</b>\nhttps://freesound.org/people/CJDeets/sounds/476740/\n\n<b>Brick
+    Reflect</b> \nhttps://freesound.org/people/kramsttop/sounds/170910/\r\n\n<b>Player
+    Hit</b> \nhttps://freesound.org/people/damnsatinist/sounds/493913/\r\n\n\n<b>Shoot
+    Failed </b> https://freesound.org/people/Benboncan/sounds/74394/\r\n\n<b>Life
+    Power Up </b> https://freesound.org/people/SimonBay/sounds/439889/"
+--- !u!222 &1005539825
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1005539822}
+  m_CullTransparentMesh: 0
 --- !u!1 &1009213295
 GameObject:
   m_ObjectHideFlags: 0
@@ -959,7 +1046,7 @@ RectTransform:
   - {fileID: 1414318416}
   - {fileID: 2015328747}
   m_Father: {fileID: 1690818984}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1752,6 +1839,7 @@ RectTransform:
   - {fileID: 61401683}
   - {fileID: 1750133032}
   - {fileID: 197764232}
+  - {fileID: 1005539823}
   - {fileID: 1119688926}
   m_Father: {fileID: 1166847754}
   m_RootOrder: 3

@@ -5,99 +5,122 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System;
 
+/// <summary>
+/// Classe manager do projeto, que realiza diversos métodos relacionados à mecânica ou utilitários.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     [Header("Object References")]
-    [SerializeField] private GameObject gameOverCanvas;
-    [SerializeField] private Button playAgainBtn;
-    [SerializeField] private Button mainMenuBtn;
-    [SerializeField] private Text turnFeedback;
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip[] audioClips;
+    [SerializeField] private GameObject gameOverCanvas; //Referência do gameObject da tela de game over.
+    [SerializeField] private Button playAgainBtn; //Referência do botão de jogar novamente.
+    [SerializeField] private Button mainMenuBtn; //Referência do botão de retornar ao menu.
+    [SerializeField] private Text turnFeedback; //Referência do texto de feedback do turno atual na tela e jogo.
+    [SerializeField] private AudioSource audioSource; //Referência do audioSource da cena GameScene.
+    [SerializeField] private AudioClip[] audioClips; //Referência de todos os SFX do jogo.
 
     [Header("References for turn control")]
-    [SerializeField] private GameObject[] players;
-    public static short currentTurn;
-    public static short turnMoment;
+    [SerializeField] private GameObject[] players; //Array que guarda todos os jogadores instanciados.
+    public static short currentTurn; //COntrola de qual jogador é o turno atual.
+    public static short turnMoment; //Controla qual é o momento do turno: 0 - Início, 1 - resolução ou 2 - fim.
 
     [Header("Special Bullets Control")]
-    public static short fastBulletCount;
+    public static short fastBulletCount; //Controla o comportamento da fast bullet na lógica do jogo.
 
     [Header("Power Up Spawn")]
-    [SerializeField] private GameObject[] powerUps;
-    [SerializeField] private GameObject powerUpsPlace;
-    public static short powerUpControl;
+    [SerializeField] private GameObject[] powerUps; //Guarda todos os gameobjects de power ups diponíveis.
+    [SerializeField] private GameObject powerUpsPlace; //Guarda os waypoints de spawn de powerups do mapa atual.
+    public static short powerUpControl; //Controla quantos powerups podem haver na tela de jogo.
 
     public GameObject PowerUpsPlace { get => powerUpsPlace; set => powerUpsPlace = value; }
 
     public void StartGame()
     {
-        for (int i = 0; i <= players.Length - 1; i++)
-        {
-
-            players[i].GetComponent<Player>().CanMoveTurn = true;
-        }
-
-        currentTurn = (short)UnityEngine.Random.Range(0, players.Length);
+        ControlPlayers(true);
+        currentTurn = (short)UnityEngine.Random.Range(0, players.Length); //Sorteio de quem começa jogando
         StartCoroutine(TurnSystem());
         StartCoroutine(SpawnPowerUps());
     }
 
+    /// <summary>
+    /// Método que controla os turnos do jogo.
+    /// </summary>
     IEnumerator TurnSystem()
     {
-        if (turnMoment == 0)
+        if (gameOverCanvas.activeInHierarchy == false)
         {
-            for (int i = 0; i <= players.Length - 1; i++)
+            if (turnMoment == 0) //Inicio de turno
             {
-                //Inicio de turno
-                if ((short)players[i].GetComponent<Player>().PlayerId != currentTurn)
+                for (int i = 0; i <= players.Length - 1; i++)
                 {
-                    players[i].GetComponent<Player>().CanMoveTurn = false;
+                    if ((short)players[i].GetComponent<Player>().PlayerId != currentTurn)
+                    {
+                        players[i].GetComponent<Player>().CanMoveTurn = false;
+                    }
                 }
             }
-        }
 
-        turnFeedback.text = $"Player {currentTurn + 1} turn";
-        turnFeedback.GetComponent<Animator>().SetTrigger("feedback");
+            turnFeedback.text = $"Player {currentTurn + 1} turn";
+            turnFeedback.GetComponent<Animator>().SetTrigger("feedback");
 
-        yield return new WaitUntil(() => turnMoment == 1);
+            yield return new WaitUntil(() => turnMoment == 1); //Resolução do turno
 
-        for (int i = 0; i <= players.Length - 1; i++)
-        {
+            for (int i = 0; i <= players.Length - 1; i++)
+            {
 
-            players[i].GetComponent<Player>().CanMoveTurn = false;
-        }
+                players[i].GetComponent<Player>().CanMoveTurn = false;
+            }
 
-        yield return new WaitUntil(() => turnMoment == 2);
+            yield return new WaitUntil(() => turnMoment == 2); //Fim do turno
 
-        for (int i = 0; i <= players.Length - 1; i++)
-        {
+            for (int i = 0; i <= players.Length - 1; i++)
+            {
 
-            players[i].GetComponent<Player>().CanMoveTurn = true;
-        }
+                players[i].GetComponent<Player>().CanMoveTurn = true;
+            }
 
-        if (currentTurn >= players.Length - 1)
-        {
-            currentTurn = 0;
-        }
-        else
-        {
-            if (fastBulletCount != 1)
+            if (fastBulletCount != 1) //Controle especial da fast bullet
             {
                 currentTurn++;
             }
-        }
 
-        turnMoment = 0;
-        StartCoroutine(TurnSystem());
+            if (currentTurn > players.Length - 1)
+            {
+                currentTurn = 0;
+            }
+
+            turnMoment = 0;
+
+            StartCoroutine(TurnSystem()); //Chama o próximo turno
+        }
+        else
+        {
+            ControlPlayers(false);
+        }
     }
 
+    /// <summary>
+    /// Procura e toca o som que é passado pela string.
+    /// </summary>
     void AudioPlay(string audioName)
     {
         audioSource.clip = Array.Find(audioClips, item => item.name == audioName);
         audioSource.Play();
     }
 
+    /// <summary>
+    /// Controles do jogo para os jogadores.
+    /// </summary>
+    void ControlPlayers(bool control)
+    {
+        for (int i = 0; i <= players.Length - 1; i++)
+        {
+            players[i].GetComponent<Player>().CanMoveTurn = control;
+        }
+    }
+
+    /// <summary>
+    /// Chama a tela de GameOver, e procura o jogador que está vivo para feedback em tela.
+    /// </summary>
     void GameOver(int playerId)
     {
         gameOverCanvas.SetActive(true);
@@ -112,24 +135,27 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Spawne power ups em um dos 10 pontos pré definidos randomicamente em cada mapa.
+    /// </summary>
     IEnumerator SpawnPowerUps()
     {
         powerUpControl++;
         short randomPower = (short)UnityEngine.Random.Range(0, powerUps.Length);
         short randomPlace = (short)UnityEngine.Random.Range(0, powerUpsPlace.transform.childCount);
-        GameObject powerUp = Instantiate(powerUps[randomPower], powerUpsPlace.transform.GetChild(randomPlace).transform.position, 
+        GameObject powerUp = Instantiate(powerUps[randomPower], powerUpsPlace.transform.GetChild(randomPlace).transform.position,
         powerUpsPlace.transform.GetChild(randomPlace).transform.rotation, powerUpsPlace.transform.GetChild(randomPlace).transform);
-       
+
         yield return new WaitUntil(() => powerUpControl == 0);
-               
+
         short randomTimer = (short)UnityEngine.Random.Range(15, 30);
         short count = 0;
-        while(count < randomTimer)
+        while (count < randomTimer)
         {
             count++;
             yield return new WaitForSeconds(1f);
         }
-    
+
         yield return new WaitUntil(() => count >= randomTimer);
         StartCoroutine(SpawnPowerUps());
     }
@@ -137,8 +163,8 @@ public class GameManager : MonoBehaviour
     #region Inscrição e trancamento nos eventos
     void OnEnable()
     {
-        Player.OnPlayerDied += GameOver;
-        Bullet.OnSendSound += AudioPlay;
+        Player.OnPlayerDied += GameOver; //Escuta quando um player perde.
+        Bullet.OnSendSound += AudioPlay; //Escuta quando um som é invocado.
     }
 
     void OnDisable()

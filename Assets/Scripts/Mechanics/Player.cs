@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Classe base de cada Player.
+/// </summary>
 public class Player : MonoBehaviour
 {
-    public enum NumberPlayer
+    public enum NumberPlayer //ID de cada jogador, e também de um objeto que possa herdar a classe.
     {
         player_1,
         player_2,
@@ -13,31 +16,28 @@ public class Player : MonoBehaviour
     }
 
     // Events
-    public delegate void PlayerDied(int player);
+    public delegate void PlayerDied(int player); //Invoca quando o campo Health do jogador chega a 0.
     public static event PlayerDied OnPlayerDied;
 
-    public delegate void ResolutionTurn(int turnMode);
-    public static event ResolutionTurn OnResolutionTurn;
-
     [Header("Player Status")]
-    [SerializeField] private NumberPlayer playerId;
-    [SerializeField] private int health;
-    [SerializeField] protected float moveSpeed;
-    [SerializeField] protected float angularSpeed;
-    [SerializeField] private float startAngule;
-    [SerializeField] private float moveLimit;
-    [SerializeField] private float angularLimit;
+    [SerializeField] private NumberPlayer playerId; //Id de cada jogador em tela.
+    [SerializeField] private int health; //Vida do jogador.
+    [SerializeField] protected float moveSpeed; //Velocidade de movimentação.
+    [SerializeField] protected float angularSpeed; //Velocidade do movimento angular.
+    [SerializeField] private float startAngule; //Ângulo do sprite inicial
+    [SerializeField] private float moveLimit; //Limite para controle da movimentação.
+    [SerializeField] private float angularLimit; //Limite de movimento angular.
 
-    [Header("Player Status")]
-    private bool canMoveTurn;
+    [Header("Player Control")]
+    private bool canMoveTurn; //Controla se o jogador pode se movimentar
 
     [Header("References")]
-    [SerializeField] private GameObject spriteObj;
-    [SerializeField] private GameObject playerCannon;
-    [SerializeField] private GameObject bulletObj, bulletParent;
+    [SerializeField] private GameObject spriteObj; //Referência do sprite do jogador
+    [SerializeField] private GameObject playerCannon; //Referência do objeto que é a referência e posição do tiro do jogador.
+    [SerializeField] private GameObject bulletObj, bulletParent; //Referência da bullet e do GameObject que vai guardar as bullets em c
 
     [Header("HUD References")]
-    [SerializeField] private Text health_txt;
+    [SerializeField] private Text health_txt; //Referência da HUD de vida do jogador.
 
     public NumberPlayer PlayerId { get => playerId; set => playerId = value; }
     public bool CanMoveTurn { get => canMoveTurn; set => canMoveTurn = value; }
@@ -59,17 +59,20 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Controla a movimentação linear e angular do jogador.
+    /// </summary>
     protected virtual void Movement()
     {
         if (transform.position.y < Screen.height - moveLimit && transform.position.y > 0 + moveLimit)
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                transform.Translate(Vector2.up * moveSpeed * Time.deltaTime);
+                transform.Translate((Vector2.up * moveSpeed) * Time.deltaTime * (Screen.height + Screen.width / 2));
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
-                transform.Translate(Vector2.down * moveSpeed * Time.deltaTime);
+                transform.Translate((Vector2.down * moveSpeed) * Time.deltaTime * (Screen.height + Screen.width / 2));
             }
         }
         else
@@ -85,11 +88,11 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                spriteObj.transform.Rotate(new Vector3(0, 0, 1 * angularSpeed  * Time.deltaTime), Space.Self);
+                spriteObj.transform.Rotate(new Vector3(0, 0, 1 * angularSpeed * Time.deltaTime * (Screen.height + Screen.width / 2)), Space.Self);
             }
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                spriteObj.transform.Rotate(new Vector3(0, 0, -1 * angularSpeed  * Time.deltaTime), Space.Self);
+                spriteObj.transform.Rotate(new Vector3(0, 0, -1 * angularSpeed * Time.deltaTime * (Screen.height + Screen.width / 2)), Space.Self);
             }
         }
         else
@@ -105,6 +108,9 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Instancia as bullets quando o jogador atirar.
+    /// </summary>
     void Shoot(Vector2 pos, Quaternion rotation)
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -114,6 +120,9 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// O que acontece quando o jogador é atingido por uma bullet.
+    /// </summary>
     void OnReceiveDamage(int damageReceived, string name)
     {
         if (name == this.gameObject.transform.name)
@@ -129,6 +138,9 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// O que acontece quando o jogador pega um powr up.
+    /// </summary>
     void OnTakePowerUp(string objName)
     {
         if (GameManager.currentTurn == (int)playerId)
